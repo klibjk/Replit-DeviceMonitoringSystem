@@ -37,20 +37,31 @@ export default function AuditLogs() {
     isError
   } = useQuery<AuditLog[]>({
     queryKey: ['/api/audit-logs'],
+    refetchInterval: 5000, // Refetch every 5 seconds
+    staleTime: 2000, // Consider data stale after 2 seconds
   });
   
-  const filteredLogs = auditLogs.filter(log => {
-    const matchesSearch = search === "" || 
-      log.table_name.toLowerCase().includes(search.toLowerCase()) ||
-      log.action.toLowerCase().includes(search.toLowerCase()) ||
-      log.performed_by.toLowerCase().includes(search.toLowerCase()) ||
-      log.record_id.toString().includes(search);
-    
-    const matchesTable = tableFilter === "all" || log.table_name === tableFilter;
-    const matchesAction = actionFilter === "all" || log.action === actionFilter;
-    
-    return matchesSearch && matchesTable && matchesAction;
-  });
+  // First sort logs by timestamp in descending order (newest first),
+  // then filter them based on search and filter criteria
+  const filteredLogs = [...auditLogs]
+    .sort((a, b) => {
+      // Sort by timestamp descending (newest first)
+      const dateA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+      const dateB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+      return dateB - dateA;
+    })
+    .filter(log => {
+      const matchesSearch = search === "" || 
+        log.table_name.toLowerCase().includes(search.toLowerCase()) ||
+        log.action.toLowerCase().includes(search.toLowerCase()) ||
+        log.performed_by.toLowerCase().includes(search.toLowerCase()) ||
+        log.record_id.toString().includes(search);
+      
+      const matchesTable = tableFilter === "all" || log.table_name === tableFilter;
+      const matchesAction = actionFilter === "all" || log.action === actionFilter;
+      
+      return matchesSearch && matchesTable && matchesAction;
+    });
   
   // Get unique tables and actions for filters
   const uniqueTablesMap = new Map<string, boolean>();

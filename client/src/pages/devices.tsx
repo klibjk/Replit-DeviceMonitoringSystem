@@ -294,6 +294,7 @@ export default function Devices() {
           setIsAlertModalOpen(false);
           setSelectedDevice(null);
         }}
+        device={selectedDevice || undefined}
       />
       
       {/* Delete Confirmation Dialog */}

@@ -168,7 +168,7 @@ export default function AlertModal({
                   <Select 
                     onValueChange={field.onChange} 
                     value={field.value ? field.value.toString() : undefined}
-                    disabled={isLoadingDevices}
+                    disabled={isLoadingDevices || !!device} // Disable if a specific device is selected via actions menu
                   >
                     <FormControl>
                       <SelectTrigger>
