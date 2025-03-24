@@ -37,12 +37,20 @@ import { Alert, Device } from "@shared/schema";
 
 // Extended schema with validation
 const alertFormSchema = z.object({
-  device_id: z.string().min(1, "Device is required").transform(val => parseInt(val, 10)),
+  device_id: z.union([
+    z.string().min(1, "Device is required").transform(val => parseInt(val, 10)),
+    z.number().int().positive("Device ID must be a positive integer")
+  ]),
   type: z.enum(["info", "warning", "critical"]),
   message: z.string().min(3, "Message must be at least 3 characters"),
 });
 
-type AlertFormValues = z.infer<typeof alertFormSchema>;
+// Using a custom type to work with string device_id in the form
+interface AlertFormValues {
+  device_id: string | number;
+  type: AlertType;
+  message: string;
+}
 
 interface AlertModalProps {
   isOpen: boolean;
@@ -78,13 +86,13 @@ export default function AlertModal({
   useEffect(() => {
     if (alert) {
       form.reset({
-        device_id: String(alert.device_id),
+        device_id: String(alert.device_id), // Convert to string for the form
         type: alert.type as AlertType,
         message: alert.message,
       });
     } else {
       form.reset({
-        device_id: "",
+        device_id: "", // Will be transformed to number by schema
         type: "info",
         message: "",
       });
@@ -94,14 +102,22 @@ export default function AlertModal({
   const onSubmit = async (data: AlertFormValues) => {
     setIsSubmitting(true);
     try {
+      // Convert device_id to number if it's a string
+      const formattedData = {
+        ...data,
+        device_id: typeof data.device_id === 'string' 
+          ? parseInt(data.device_id, 10) 
+          : data.device_id
+      };
+      
       if (isEdit && alert) {
-        await apiRequest('PUT', `/api/alerts/${alert.id}`, data);
+        await apiRequest('PUT', `/api/alerts/${alert.id}`, formattedData);
         toast({
           title: "Alert updated",
           description: "Alert has been updated successfully.",
         });
       } else {
-        await apiRequest('POST', '/api/alerts', data);
+        await apiRequest('POST', '/api/alerts', formattedData);
         toast({
           title: "Alert created",
           description: "New alert has been created successfully.",
