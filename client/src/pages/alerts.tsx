@@ -53,7 +53,7 @@ import { Alert, Device } from "@shared/schema";
 export default function Alerts() {
   const { toast } = useToast();
   const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<string>("");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
@@ -83,7 +83,7 @@ export default function Alerts() {
       alert.message.toLowerCase().includes(search.toLowerCase()) ||
       getDeviceName(alert.device_id).toLowerCase().includes(search.toLowerCase());
     
-    const matchesType = typeFilter === "" || alert.type === typeFilter;
+    const matchesType = typeFilter === "all" || alert.type === typeFilter;
     
     return matchesSearch && matchesType;
   });
@@ -189,7 +189,7 @@ export default function Alerts() {
               <SelectValue placeholder="All alert types" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All types</SelectItem>
+              <SelectItem value="all">All types</SelectItem>
               <SelectItem value="info">Info</SelectItem>
               <SelectItem value="warning">Warning</SelectItem>
               <SelectItem value="critical">Critical</SelectItem>

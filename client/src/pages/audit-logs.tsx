@@ -28,8 +28,8 @@ import { AuditLog } from "@shared/schema";
 
 export default function AuditLogs() {
   const [search, setSearch] = useState("");
-  const [tableFilter, setTableFilter] = useState<string>("");
-  const [actionFilter, setActionFilter] = useState<string>("");
+  const [tableFilter, setTableFilter] = useState<string>("all");
+  const [actionFilter, setActionFilter] = useState<string>("all");
   
   const { 
     data: auditLogs = [], 
@@ -46,8 +46,8 @@ export default function AuditLogs() {
       log.performed_by.toLowerCase().includes(search.toLowerCase()) ||
       log.record_id.toString().includes(search);
     
-    const matchesTable = tableFilter === "" || log.table_name === tableFilter;
-    const matchesAction = actionFilter === "" || log.action === actionFilter;
+    const matchesTable = tableFilter === "all" || log.table_name === tableFilter;
+    const matchesAction = actionFilter === "all" || log.action === actionFilter;
     
     return matchesSearch && matchesTable && matchesAction;
   });
