@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,7 +11,8 @@ import {
   DialogHeader, 
   DialogTitle, 
   DialogFooter,
-  DialogClose
+  DialogClose,
+  DialogDescription
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -59,17 +60,34 @@ export default function DeviceModal({
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const defaultValues: DeviceFormValues = {
-    name: device?.name || "",
-    os: device?.os || "",
-    status: (device?.status as DeviceStatus) || "online",
-    location: device?.location || "",
-  };
-  
   const form = useForm<DeviceFormValues>({
     resolver: zodResolver(deviceFormSchema),
-    defaultValues,
+    defaultValues: {
+      name: device?.name || "",
+      os: device?.os || "",
+      status: (device?.status as DeviceStatus) || "online",
+      location: device?.location || "",
+    }
   });
+  
+  // Reset form when device changes
+  useEffect(() => {
+    if (device) {
+      form.reset({
+        name: device.name,
+        os: device.os,
+        status: device.status as DeviceStatus,
+        location: device.location,
+      });
+    } else {
+      form.reset({
+        name: "",
+        os: "",
+        status: "online",
+        location: "",
+      });
+    }
+  }, [device, form]);
   
   const onSubmit = async (data: DeviceFormValues) => {
     setIsSubmitting(true);

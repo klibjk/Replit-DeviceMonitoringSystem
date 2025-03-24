@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,7 +12,8 @@ import {
   DialogHeader, 
   DialogTitle, 
   DialogFooter,
-  DialogClose
+  DialogClose,
+  DialogDescription
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,16 +65,31 @@ export default function AlertModal({
     queryKey: ['/api/devices'],
   });
   
-  const defaultValues: Partial<AlertFormValues> = {
-    device_id: alert?.device_id ? String(alert.device_id) : "",
-    type: alert?.type as AlertType || "info",
-    message: alert?.message || "",
-  };
-  
   const form = useForm<AlertFormValues>({
     resolver: zodResolver(alertFormSchema),
-    defaultValues,
+    defaultValues: {
+      device_id: alert?.device_id ? String(alert.device_id) : "",
+      type: alert?.type as AlertType || "info",
+      message: alert?.message || "",
+    }
   });
+  
+  // Reset form when alert changes
+  useEffect(() => {
+    if (alert) {
+      form.reset({
+        device_id: String(alert.device_id),
+        type: alert.type as AlertType,
+        message: alert.message,
+      });
+    } else {
+      form.reset({
+        device_id: "",
+        type: "info",
+        message: "",
+      });
+    }
+  }, [alert, form]);
   
   const onSubmit = async (data: AlertFormValues) => {
     setIsSubmitting(true);
@@ -124,7 +140,7 @@ export default function AlertModal({
                   <FormLabel>Device</FormLabel>
                   <Select 
                     onValueChange={field.onChange} 
-                    defaultValue={field.value?.toString()}
+                    value={field.value ? field.value.toString() : undefined}
                     disabled={isLoadingDevices}
                   >
                     <FormControl>
@@ -153,7 +169,7 @@ export default function AlertModal({
                   <FormLabel>Type</FormLabel>
                   <Select 
                     onValueChange={field.onChange} 
-                    defaultValue={field.value}
+                    value={field.value || "info"}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -198,7 +214,7 @@ export default function AlertModal({
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
-                variant={isEdit ? "default" : "warning"}
+                variant={isEdit ? "default" : "destructive"}
               >
                 {isSubmitting ? 'Saving...' : isEdit ? 'Update Alert' : 'Add Alert'}
               </Button>
