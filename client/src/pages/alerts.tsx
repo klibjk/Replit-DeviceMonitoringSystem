@@ -297,6 +297,7 @@ export default function Alerts() {
         }}
         alert={selectedAlert || undefined}
         isEdit={!!selectedAlert}
+        deviceId={selectedAlert?.device_id}
       />
       
       {/* Delete Confirmation Dialog */}
