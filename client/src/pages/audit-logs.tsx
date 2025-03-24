@@ -112,7 +112,7 @@ export default function AuditLogs() {
               <SelectValue placeholder="All tables" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All tables</SelectItem>
+              <SelectItem value="all">All tables</SelectItem>
               {uniqueTables.map(table => (
                 <SelectItem key={table} value={table}>
                   {table}
@@ -126,7 +126,7 @@ export default function AuditLogs() {
               <SelectValue placeholder="All actions" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All actions</SelectItem>
+              <SelectItem value="all">All actions</SelectItem>
               {uniqueActions.map(action => (
                 <SelectItem key={action} value={action}>
                   {action.charAt(0).toUpperCase() + action.slice(1)}

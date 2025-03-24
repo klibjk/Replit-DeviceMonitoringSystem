@@ -5,14 +5,14 @@ import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogFooter,
   DialogClose,
-  DialogDescription
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,12 +24,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
 import { DeviceStatus } from "@/lib/types";
 import { Device } from "@shared/schema";
@@ -51,15 +51,15 @@ interface DeviceModalProps {
   isEdit?: boolean;
 }
 
-export default function DeviceModal({ 
-  isOpen, 
-  onClose, 
-  device, 
-  isEdit = false 
+export default function DeviceModal({
+  isOpen,
+  onClose,
+  device,
+  isEdit = false,
 }: DeviceModalProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const form = useForm<DeviceFormValues>({
     resolver: zodResolver(deviceFormSchema),
     defaultValues: {
@@ -67,9 +67,9 @@ export default function DeviceModal({
       os: device?.os || "",
       status: (device?.status as DeviceStatus) || "online",
       location: device?.location || "",
-    }
+    },
   });
-  
+
   // Reset form when device changes
   useEffect(() => {
     if (device) {
@@ -88,46 +88,46 @@ export default function DeviceModal({
       });
     }
   }, [device, form]);
-  
+
   const onSubmit = async (data: DeviceFormValues) => {
     setIsSubmitting(true);
     try {
       if (isEdit && device) {
-        await apiRequest('PUT', `/api/devices/${device.id}`, data);
+        await apiRequest("PUT", `/api/devices/${device.id}`, data);
         toast({
           title: "Device updated",
           description: "Device has been updated successfully.",
         });
       } else {
-        await apiRequest('POST', '/api/devices', data);
+        await apiRequest("POST", "/api/devices", data);
         toast({
           title: "Device created",
           description: "New device has been created successfully.",
         });
       }
       // Invalidate the devices cache
-      queryClient.invalidateQueries({ queryKey: ['/api/devices'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/stats'] });
+      queryClient.invalidateQueries({ queryKey: ["/api/devices"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       onClose();
     } catch (error) {
       console.error("Error saving device:", error);
       toast({
         title: "Error",
-        description: `Failed to ${isEdit ? 'update' : 'create'} device. Please try again.`,
+        description: `Failed to ${isEdit ? "update" : "create"} device. Please try again.`,
         variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{isEdit ? 'Edit Device' : 'Add New Device'}</DialogTitle>
+          <DialogTitle>{isEdit ? "Edit Device" : "Add New Device"}</DialogTitle>
         </DialogHeader>
-        
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -143,15 +143,15 @@ export default function DeviceModal({
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="os"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Operating System</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
+                  <Select
+                    onValueChange={field.onChange}
                     value={field.value || ""}
                   >
                     <FormControl>
@@ -172,15 +172,15 @@ export default function DeviceModal({
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="status"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
+                  <Select
+                    onValueChange={field.onChange}
                     value={field.value || "online"}
                   >
                     <FormControl>
@@ -199,7 +199,7 @@ export default function DeviceModal({
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="location"
@@ -213,18 +213,19 @@ export default function DeviceModal({
                 </FormItem>
               )}
             />
-            
+
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="outline">
                   Cancel
                 </Button>
               </DialogClose>
-              <Button 
-                type="submit" 
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Saving...' : isEdit ? 'Update Device' : 'Add Device'}
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting
+                  ? "Saving..."
+                  : isEdit
+                    ? "Update Device"
+                    : "Add Device"}
               </Button>
             </DialogFooter>
           </form>
