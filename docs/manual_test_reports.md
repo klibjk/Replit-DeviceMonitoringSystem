@@ -14,6 +14,7 @@
 **Actual**: The device editing modal resets all values.
 
 **Status**: ✅ FIXED
+**Fix Commit**: [2023-03-24] Fixed device editing state persistence - commit #1
 
 ---
 
@@ -35,6 +36,8 @@ You can also disable this overlay by setting server.hmr.overlay to false in vite
 **Actual**: Pages display an error about SelectItem components with empty string values.
 
 **Status**: ✅ FIXED
+**Fix Commit**: [2023-03-24] Fixed SelectItem and badge components - commit #2
+
 - Updated the filter logic to use "all" instead of empty strings
 - Fixed the badge component to support custom variant types (info, warning, success)
 - Set default filter values to "all" for better UX
