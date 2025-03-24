@@ -82,24 +82,22 @@ export default function AlertModal({
     }
   });
   
-  // Reset form when modal is opened/closed or alert changes
+  // Reset form when alert changes
   useEffect(() => {
-    if (isOpen) {
-      if (alert) {
-        form.reset({
-          device_id: String(alert.device_id), // Convert to string for the form
-          type: alert.type as AlertType,
-          message: alert.message,
-        });
-      } else {
-        form.reset({
-          device_id: "", // Will be transformed to number by schema
-          type: "info",
-          message: "",
-        });
-      }
+    if (alert) {
+      form.reset({
+        device_id: String(alert.device_id), // Convert to string for the form
+        type: alert.type as AlertType,
+        message: alert.message,
+      });
+    } else {
+      form.reset({
+        device_id: "", // Will be transformed to number by schema
+        type: "info",
+        message: "",
+      });
     }
-  }, [isOpen, alert, form]);
+  }, [alert, form]);
   
   const onSubmit = async (data: AlertFormValues) => {
     setIsSubmitting(true);
@@ -158,7 +156,7 @@ export default function AlertModal({
                   <FormLabel>Device</FormLabel>
                   <Select 
                     onValueChange={field.onChange} 
-                    value={field.value ? field.value.toString() : ""}
+                    value={field.value ? field.value.toString() : undefined}
                     disabled={isLoadingDevices}
                   >
                     <FormControl>
@@ -187,7 +185,7 @@ export default function AlertModal({
                   <FormLabel>Type</FormLabel>
                   <Select 
                     onValueChange={field.onChange} 
-                    value={field.value || ""}
+                    value={field.value || "info"}
                   >
                     <FormControl>
                       <SelectTrigger>
