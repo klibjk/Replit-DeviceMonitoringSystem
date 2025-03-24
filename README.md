@@ -1,6 +1,6 @@
 # Device Inventory Alert Tracker
 
-A full-stack CRUD application for managing device inventory and alerts with audit logging functionality.
+A full-stack CRUD application for managing device inventory and alerts with comprehensive monitoring and audit logging capabilities.
 
 ## Features
 
@@ -10,31 +10,57 @@ A full-stack CRUD application for managing device inventory and alerts with audi
 - **Dashboard**: View key metrics and recent activities at a glance
 - **Responsive Design**: Works on desktop, tablet, and mobile devices
 
-## Quick Start
+## Repository Versions
 
-This application uses an in-memory database for demo purposes. All data will be reset when the server restarts.
+This repository maintains two versions of the application with different storage implementations:
 
-1. Click the "Run" button in Replit to start the application
-2. Navigate to the different sections using the sidebar:
+- **Main Branch (PostgreSQL)**: Uses PostgreSQL database for persistent storage
+- **In-Memory Branch**: Uses in-memory data structures for demo and testing purposes
+
+### Quick Start (PostgreSQL Version)
+
+The main branch uses a PostgreSQL database for persistent storage.
+
+1. Ensure PostgreSQL is installed and running
+2. Set up environment variables:
+   - `DATABASE_URL`: PostgreSQL connection string
+   - (Alternative: Individual `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE` variables)
+3. Run `npm run db:push` to set up the database schema
+4. Start the application with `npm run dev`
+
+### Quick Start (In-Memory Version)
+
+The in-memory branch uses JavaScript Maps for storage (data will be reset when the server restarts).
+
+1. Switch to the in-memory branch: `git checkout in-memory-demo`
+2. Start the application with `npm run dev`
+3. Navigate to the different sections using the sidebar:
    - **Dashboard**: Overview of system metrics
    - **Devices**: Manage your device inventory
    - **Alerts**: Create and manage device alerts
    - **Audit Logs**: View history of system operations
 
-## Development
-
-### Technology Stack
+## Technology Stack
 
 - **Frontend**: React, TanStack Query, Tailwind CSS, shadcn/ui
 - **Backend**: Express.js, Drizzle ORM
-- **Storage**: In-memory (Maps) with plans for PostgreSQL migration
+- **Storage**: 
+  - PostgreSQL with Drizzle ORM (main branch)
+  - In-memory JavaScript Maps (in-memory-demo branch)
 
-### Project Structure
+## Project Structure
 
 - `/client`: Frontend React application
 - `/server`: Backend Express API
 - `/shared`: Shared schemas and types
 - `/docs`: Project documentation
+
+## Development
+
+### Git Branching Strategy
+
+- **main**: Production-ready code with PostgreSQL integration
+- **in-memory-demo**: Simplified version using in-memory storage for demos and testing
 
 ### Running Locally
 
@@ -48,12 +74,12 @@ This starts the Express server and the Vite development server.
 
 ## Future Enhancements
 
-- PostgreSQL database integration
 - User authentication and authorization
 - Advanced filtering and searching
 - Real-time device metrics
 - Alert automation based on thresholds
 - Dark/light theme toggle
+- Data visualization enhancements
 
 ## Documentation
 

@@ -5,6 +5,19 @@ All notable changes to the Device Inventory Alert Tracker project will be docume
 ## [Unreleased]
 
 ### Added
+- PostgreSQL database integration using Drizzle ORM
+- Git branching strategy to maintain both in-memory and PostgreSQL versions
+- Enhanced documentation for different application versions
+- Database configuration with environment variables
+
+### Changed
+- Storage implementation transitioned from in-memory to PostgreSQL
+- Updated README with detailed setup instructions for both versions
+- Refactored storage interface implementation for database integration
+
+## [0.2.0] - 2025-03-24
+
+### Added
 - Initial project setup with React, TypeScript, and Express
 - Comprehensive data models for devices, alerts, and audit logs
 - Backend API endpoints with in-memory storage
@@ -25,6 +38,7 @@ All notable changes to the Device Inventory Alert Tracker project will be docume
 - Enhanced audit logging to capture all user activities
 
 ## [Future Plans]
+- User authentication and authorization
 - Real-time metric ingestion from devices
 - Alert automation via configurable thresholds
 - Advanced filtering and searching capabilities
