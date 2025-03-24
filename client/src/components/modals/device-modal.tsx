@@ -152,7 +152,7 @@ export default function DeviceModal({
                   <FormLabel>Operating System</FormLabel>
                   <Select 
                     onValueChange={field.onChange} 
-                    defaultValue={field.value}
+                    value={field.value || ""}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -181,7 +181,7 @@ export default function DeviceModal({
                   <FormLabel>Status</FormLabel>
                   <Select 
                     onValueChange={field.onChange} 
-                    defaultValue={field.value}
+                    value={field.value || "online"}
                   >
                     <FormControl>
                       <SelectTrigger>
