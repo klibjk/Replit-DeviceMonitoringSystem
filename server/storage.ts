@@ -171,8 +171,10 @@ export class MemStorage implements IStorage {
   async createAuditLog(insertAuditLog: InsertAuditLog): Promise<AuditLog> {
     const id = this.auditLogCurrentId++;
     const now = new Date();
+    // Ensure performed_by is always set, default to "system" if not provided
     const auditLog: AuditLog = {
       ...insertAuditLog,
+      performed_by: insertAuditLog.performed_by || "system",
       id,
       timestamp: now
     };
