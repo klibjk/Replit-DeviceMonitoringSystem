@@ -76,7 +76,7 @@ export default function AlertModal({
   const form = useForm<AlertFormValues>({
     resolver: zodResolver(alertFormSchema),
     defaultValues: {
-      device_id: alert?.device_id ? String(alert.device_id) : "",
+      device_id: alert?.device_id ? String(alert.device_id) : (devices[0]?.id?.toString() || "1"), // Fallback to ID "1" if no devices
       type: alert?.type as AlertType || "info",
       message: alert?.message || "",
     }
@@ -92,12 +92,12 @@ export default function AlertModal({
       });
     } else {
       form.reset({
-        device_id: "", // Will be transformed to number by schema
+        device_id: devices[0]?.id?.toString() || "1", // Fallback to ID "1" if no devices
         type: "info",
         message: "",
       });
     }
-  }, [alert, form]);
+  }, [alert, form, devices]);
   
   const onSubmit = async (data: AlertFormValues) => {
     setIsSubmitting(true);

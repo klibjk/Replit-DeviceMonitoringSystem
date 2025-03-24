@@ -53,8 +53,13 @@ export default function AuditLogs() {
   });
   
   // Get unique tables and actions for filters
-  const uniqueTables = [...new Set(auditLogs.map(log => log.table_name))];
-  const uniqueActions = [...new Set(auditLogs.map(log => log.action))];
+  const uniqueTablesMap = new Map<string, boolean>();
+  auditLogs.forEach(log => uniqueTablesMap.set(log.table_name, true));
+  const uniqueTables = Array.from(uniqueTablesMap.keys());
+  
+  const uniqueActionsMap = new Map<string, boolean>();
+  auditLogs.forEach(log => uniqueActionsMap.set(log.action, true));
+  const uniqueActions = Array.from(uniqueActionsMap.keys());
   
   const getActionBadgeVariant = (action: string) => {
     switch (action) {
