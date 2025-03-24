@@ -57,13 +57,15 @@ interface AlertModalProps {
   onClose: () => void;
   alert?: Alert;
   isEdit?: boolean;
+  device?: Device; // Add device prop for when adding alert from device actions
 }
 
 export default function AlertModal({ 
   isOpen, 
   onClose, 
   alert, 
-  isEdit = false 
+  isEdit = false,
+  device
 }: AlertModalProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,22 +84,31 @@ export default function AlertModal({
     }
   });
   
-  // Reset form when alert changes
+  // Reset form when alert or device changes
   useEffect(() => {
     if (alert) {
+      // If editing an existing alert
       form.reset({
         device_id: String(alert.device_id), // Convert to string for the form
         type: alert.type as AlertType,
         message: alert.message,
       });
+    } else if (device) {
+      // If adding an alert for a specific device from the actions menu
+      form.reset({
+        device_id: String(device.id),
+        type: "info",
+        message: "",
+      });
     } else {
+      // Default fallback
       form.reset({
         device_id: devices[0]?.id?.toString() || "1", // Fallback to ID "1" if no devices
         type: "info",
         message: "",
       });
     }
-  }, [alert, form, devices]);
+  }, [alert, device, form, devices]);
   
   const onSubmit = async (data: AlertFormValues) => {
     setIsSubmitting(true);
