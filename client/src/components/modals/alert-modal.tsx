@@ -57,15 +57,13 @@ interface AlertModalProps {
   onClose: () => void;
   alert?: Alert;
   isEdit?: boolean;
-  deviceId?: number;
 }
 
 export default function AlertModal({ 
   isOpen, 
   onClose, 
   alert, 
-  isEdit = false,
-  deviceId
+  isEdit = false 
 }: AlertModalProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -78,7 +76,7 @@ export default function AlertModal({
   const form = useForm<AlertFormValues>({
     resolver: zodResolver(alertFormSchema),
     defaultValues: {
-      device_id: alert?.device_id ? String(alert.device_id) : deviceId ? String(deviceId) : "",
+      device_id: alert?.device_id ? String(alert.device_id) : "",
       type: alert?.type as AlertType || "info",
       message: alert?.message || "",
     }
@@ -95,13 +93,13 @@ export default function AlertModal({
         });
       } else {
         form.reset({
-          device_id: deviceId ? String(deviceId) : "", // Use the deviceId from the prop if available
+          device_id: "", // Will be transformed to number by schema
           type: "info",
           message: "",
         });
       }
     }
-  }, [isOpen, alert, deviceId, form]);
+  }, [isOpen, alert, form]);
   
   const onSubmit = async (data: AlertFormValues) => {
     setIsSubmitting(true);
