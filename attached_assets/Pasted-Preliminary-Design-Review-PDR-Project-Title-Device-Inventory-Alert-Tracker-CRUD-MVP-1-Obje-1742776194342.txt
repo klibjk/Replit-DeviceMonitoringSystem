@@ -1,0 +1,107 @@
+Preliminary Design Review (PDR)
+
+Project Title: Device Inventory & Alert Tracker (CRUD MVP)
+
+1. Objective
+
+Design and develop a CRUD-based prototype that simulates a simplified endpoint management system. This project will demonstrate backend architectural understanding and support-style investigation workflows. It is the foundation for future expansions involving real-time metric ingestion and async behaviors. The system will expose a REST API and a basic user interface to manage devices and their associated alerts.
+
+2. Core Features
+
+2.1 Device Management (CRUD)
+
+Create, view, update, and delete device records.
+
+Device fields: id, name, os, status, location, created_at, updated_at.
+
+2.2 Alert Management (CRUD)
+
+Create, view, update, and delete alerts linked to devices.
+
+Alert fields: id, device_id, type, message, created_at.
+
+2.3 Audit Logging (Create-Only)
+
+Log each create, update, and delete action into an audit_logs table.
+
+Audit fields: id, table_name, action, record_id, performed_by, timestamp.
+
+2.4 UI Interaction (Outsourced, Next.js)
+
+UI built with Next.js and integrated via RESTful CRUD APIs.
+
+Includes pages to manage devices and alerts, and view audit logs.
+
+2.5 Data Simulation Support
+
+The backend architecture will support future data simulation by allowing external scripts to send HTTP requests to existing API endpoints.
+
+These scripts will be able to insert mock device and alert data through standard POST operations.
+
+No additional ingestion logic is required; existing RESTful APIs ensure modular and flexible data input.
+
+3. Technical Architecture
+
+3.1 Frontend
+
+Framework: Next.js (React-based)
+
+Functionality: CRUD interface for devices and alerts, audit log viewer
+
+Status: Outsourced UI implementation
+
+3.2 Backend
+
+Language: Kotlin
+
+Framework: Spring Boot
+
+Architecture: MVC (Controller, Service, Repository)
+
+Features:
+
+RESTful API endpoints
+
+Validation and exception handling
+
+JPA for Postgres integration
+
+External script compatibility via HTTP API
+
+3.3 Database
+
+System: PostgreSQL
+
+Role: Primary data store for all entities
+
+3.4 Hosting
+
+Platform: Replit Deployments
+
+Infrastructure: Replit cloud backed by Google Cloud Platform
+
+Description: Snapshots of the app are deployed and run independently from the workspace
+
+Features: Custom URL, analytics, status monitoring
+
+4. Deliverables
+
+✅ Working prototype (Next.js UI + Spring Boot API)
+
+✅ GitHub repository with source code and setup instructions
+
+✅ README.md and this PDR
+
+5. Create Future Expansion Doc (Post-CRUD Phase)
+
+Real-time metric ingestion via push or polling
+
+Retry and batching logic for client-side simulation
+
+Alert automation via server-side thresholds
+
+Admin vs user role-based permissions
+
+Graph-based analytics and dashboards
+
+Performance benchmarking under high load
