@@ -4,6 +4,8 @@ import {
   alerts, type Alert, type InsertAlert,
   auditLogs, type AuditLog, type InsertAuditLog 
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, and, desc } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -187,4 +189,121 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.id, id));
+    return result[0];
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.username, username));
+    return result[0];
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const result = await db.insert(users).values(insertUser).returning();
+    return result[0];
+  }
+
+  // Device methods
+  async getDevices(): Promise<Device[]> {
+    return db.select().from(devices).orderBy(desc(devices.created_at));
+  }
+
+  async getDevice(id: number): Promise<Device | undefined> {
+    const result = await db.select().from(devices).where(eq(devices.id, id));
+    return result[0];
+  }
+
+  async createDevice(insertDevice: InsertDevice): Promise<Device> {
+    const now = new Date();
+    const result = await db.insert(devices).values({
+      ...insertDevice,
+      created_at: now,
+      updated_at: now
+    }).returning();
+    return result[0];
+  }
+
+  async updateDevice(id: number, partialDevice: Partial<InsertDevice>): Promise<Device | undefined> {
+    const now = new Date();
+    const result = await db.update(devices)
+      .set({
+        ...partialDevice,
+        updated_at: now
+      })
+      .where(eq(devices.id, id))
+      .returning();
+    
+    return result[0];
+  }
+
+  async deleteDevice(id: number): Promise<boolean> {
+    // First delete related alerts
+    const relatedAlerts = await this.getAlertsByDeviceId(id);
+    for (const alert of relatedAlerts) {
+      await this.deleteAlert(alert.id);
+    }
+    
+    // Then delete the device
+    const result = await db.delete(devices).where(eq(devices.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Alert methods
+  async getAlerts(): Promise<Alert[]> {
+    return db.select().from(alerts).orderBy(desc(alerts.created_at));
+  }
+
+  async getAlertsByDeviceId(deviceId: number): Promise<Alert[]> {
+    return db.select().from(alerts)
+      .where(eq(alerts.device_id, deviceId))
+      .orderBy(desc(alerts.created_at));
+  }
+
+  async getAlert(id: number): Promise<Alert | undefined> {
+    const result = await db.select().from(alerts).where(eq(alerts.id, id));
+    return result[0];
+  }
+
+  async createAlert(insertAlert: InsertAlert): Promise<Alert> {
+    const now = new Date();
+    const result = await db.insert(alerts).values({
+      ...insertAlert,
+      created_at: now
+    }).returning();
+    return result[0];
+  }
+
+  async updateAlert(id: number, partialAlert: Partial<InsertAlert>): Promise<Alert | undefined> {
+    const result = await db.update(alerts)
+      .set(partialAlert)
+      .where(eq(alerts.id, id))
+      .returning();
+    
+    return result[0];
+  }
+
+  async deleteAlert(id: number): Promise<boolean> {
+    const result = await db.delete(alerts).where(eq(alerts.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Audit logs methods
+  async getAuditLogs(): Promise<AuditLog[]> {
+    return db.select().from(auditLogs).orderBy(desc(auditLogs.timestamp));
+  }
+
+  async createAuditLog(insertAuditLog: InsertAuditLog): Promise<AuditLog> {
+    const now = new Date();
+    const result = await db.insert(auditLogs).values({
+      ...insertAuditLog,
+      timestamp: now
+    }).returning();
+    return result[0];
+  }
+}
+
+// Export the DatabaseStorage instance instead of MemStorage
+export const storage = new DatabaseStorage();
