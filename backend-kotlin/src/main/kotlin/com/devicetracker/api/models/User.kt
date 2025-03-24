@@ -1,7 +1,7 @@
 package com.devicetracker.api.models
 
 import jakarta.persistence.*
-import java.io.Serializable
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "users")
@@ -14,15 +14,14 @@ data class User(
     val username: String,
     
     @Column(nullable = false)
-    val password: String
-) : Serializable
-
-data class UserDTO(
-    val username: String,
-    val password: String
-)
-
-fun UserDTO.toEntity() = User(
-    username = username,
-    password = password
+    val password: String,
+    
+    @Column(nullable = false)
+    val name: String,
+    
+    @Column(nullable = false)
+    val email: String,
+    
+    @Column(name = "created_at", nullable = false)
+    val createdAt: LocalDateTime = LocalDateTime.now()
 )

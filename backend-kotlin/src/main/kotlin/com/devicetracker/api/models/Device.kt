@@ -1,11 +1,13 @@
 package com.devicetracker.api.models
 
 import jakarta.persistence.*
-import java.io.Serializable
 import java.time.LocalDateTime
 
 enum class DeviceStatus {
-    ONLINE, OFFLINE, WARNING, ERROR
+    ONLINE,
+    OFFLINE,
+    WARNING,
+    ERROR
 }
 
 @Entity
@@ -21,8 +23,8 @@ data class Device(
     @Column(nullable = false)
     val os: String,
     
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     val status: DeviceStatus,
     
     @Column(nullable = false)
@@ -33,18 +35,4 @@ data class Device(
     
     @Column(name = "updated_at", nullable = false)
     val updatedAt: LocalDateTime = LocalDateTime.now()
-) : Serializable
-
-data class DeviceDTO(
-    val name: String,
-    val os: String,
-    val status: String,
-    val location: String
-)
-
-fun DeviceDTO.toEntity() = Device(
-    name = name,
-    os = os,
-    status = DeviceStatus.valueOf(status.uppercase()),
-    location = location
 )
